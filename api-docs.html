@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Budget Tracker API Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #3498db;
+            margin-top: 25px;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+        .endpoint {
+            background-color: #f8f9fa;
+            border-left: 4px solid #2ecc71;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .method {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .get {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .post {
+            background-color: #3498db;
+            color: white;
+        }
+        .put {
+            background-color: #f39c12;
+            color: white;
+        }
+        .delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+        pre {
+            background-color: #f1f1f1;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .credentials {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        .tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-right: 5px;
+            background-color: #95a5a6;
+            color: white;
+        }
+        .required {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Personal Budget Tracker API Documentation</h1>
+    
+    <div class="credentials">
+        <h2>Login Credentials</h2>
+        <p>Use these credentials to test the API:</p>
+        <table>
+            <tr>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Name</th>
+            </tr>
+            <tr>
+                <td>john@example.com</td>
+                <td>password123</td>
+                <td>John Doe</td>
+            </tr>
+            <tr>
+                <td>jane@example.com</td>
+                <td>password123</td>
+                <td>Jane Smith</td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>Base URL</h2>
+    <p>All API endpoints are relative to: <code>http://localhost:3000</code></p>
+
+    <h2>Authentication</h2>
+    <p>Most endpoints require authentication using a JWT token. Include the token in the Authorization header:</p>
+    <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+
+    <h2>API Endpoints</h2>
+
+    <h3>Authentication</h3>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <code>/api/users/register</code>
+        <p>Register a new user</p>
+        <h4>Request Body:</h4>
+        <pre><code>{
+  "email": "user@example.com",
+  "password": "password123",
+  "name": "User Name"
+}</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "message": "User registered successfully",
+  "user": {
+    "id": 1,
+    "email": "user@example.com",
+    "name": "User Name"
+  },
+  "token": "jwt_token_here"
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <code>/api/users/login</code>
+        <p>Login with existing credentials</p>
+        <h4>Request Body:</h4>
+        <pre><code>{
+  "email": "john@example.com",
+  "password": "password123"
+}</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "message": "Login successful",
+  "user": {
+    "id": 1,
+    "email": "john@example.com",
+    "name": "John Doe"
+  },
+  "token": "jwt_token_here"
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/users/profile</code>
+        <p>Get the current user's profile</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "user": {
+    "id": 1,
+    "email": "john@example.com",
+    "name": "John Doe",
+    "createdAt": "2023-01-01T00:00:00.000Z"
+  }
+}</code></pre>
+    </div>
+
+    <h3>Categories</h3>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <code>/api/categories</code>
+        <p>Create a new category</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Request Body:</h4>
+        <pre><code>{
+  "name": "Groceries",
+  "type": "expense"
+}</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "message": "Category created successfully",
+  "category": {
+    "id": 1,
+    "name": "Groceries",
+    "type": "expense",
+    "userId": 1,
+    "createdAt": "2023-01-01T00:00:00.000Z",
+    "updatedAt": "2023-01-01T00:00:00.000Z"
+  }
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/categories</code>
+        <p>Get all categories for the current user</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Query Parameters:</h4>
+        <table>
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>type</td>
+                <td>string</td>
+                <td>Filter by type (income or expense)</td>
+            </tr>
+        </table>
+        <h4>Response:</h4>
+        <pre><code>{
+  "categories": [
+    {
+      "id": 1,
+      "name": "Salary",
+      "type": "income",
+      "userId": 1,
+      "createdAt": "2023-01-01T00:00:00.000Z",
+      "updatedAt": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "name": "Groceries",
+      "type": "expense",
+      "userId": 1,
+      "createdAt": "2023-01-01T00:00:00.000Z",
+      "updatedAt": "2023-01-01T00:00:00.000Z"
+    }
+  ]
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/categories/{id}</code>
+        <p>Get a specific category by ID</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "category": {
+    "id": 1,
+    "name": "Salary",
+    "type": "income",
+    "userId": 1,
+    "createdAt": "2023-01-01T00:00:00.000Z",
+    "updatedAt": "2023-01-01T00:00:00.000Z"
+  }
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method put">PUT</span>
+        <code>/api/categories/{id}</code>
+        <p>Update a category</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Request Body:</h4>
+        <pre><code>{
+  "name": "Updated Category Name"
+}</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "message": "Category updated successfully",
+  "category": {
+    "id": 1,
+    "name": "Updated Category Name",
+    "type": "income",
+    "userId": 1,
+    "createdAt": "2023-01-01T00:00:00.000Z",
+    "updatedAt": "2023-01-01T00:00:00.000Z"
+  }
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method delete">DELETE</span>
+        <code>/api/categories/{id}</code>
+        <p>Delete a category</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "message": "Category deleted successfully"
+}</code></pre>
+    </div>
+
+    <h3>Transactions</h3>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <code>/api/transactions</code>
+        <p>Create a new transaction</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Request Body:</h4>
+        <pre><code>{
+  "amount": 100.50,
+  "description": "Grocery shopping",
+  "date": "2023-01-15T12:00:00.000Z",
+  "type": "expense",
+  "categoryId": 2
+}</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "message": "Transaction created successfully",
+  "transaction": {
+    "id": 1,
+    "amount": 100.50,
+    "description": "Grocery shopping",
+    "date": "2023-01-15T12:00:00.000Z",
+    "type": "expense",
+    "categoryId": 2,
+    "userId": 1,
+    "createdAt": "2023-01-01T00:00:00.000Z",
+    "updatedAt": "2023-01-01T00:00:00.000Z"
+  }
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/transactions</code>
+        <p>Get all transactions with filtering and pagination</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Query Parameters:</h4>
+        <table>
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>type</td>
+                <td>string</td>
+                <td>Filter by type (income or expense)</td>
+            </tr>
+            <tr>
+                <td>categoryId</td>
+                <td>integer</td>
+                <td>Filter by category ID</td>
+            </tr>
+            <tr>
+                <td>startDate</td>
+                <td>date</td>
+                <td>Filter by start date (YYYY-MM-DD)</td>
+            </tr>
+            <tr>
+                <td>endDate</td>
+                <td>date</td>
+                <td>Filter by end date (YYYY-MM-DD)</td>
+            </tr>
+            <tr>
+                <td>minAmount</td>
+                <td>number</td>
+                <td>Filter by minimum amount</td>
+            </tr>
+            <tr>
+                <td>maxAmount</td>
+                <td>number</td>
+                <td>Filter by maximum amount</td>
+            </tr>
+            <tr>
+                <td>page</td>
+                <td>integer</td>
+                <td>Page number (default: 1)</td>
+            </tr>
+            <tr>
+                <td>limit</td>
+                <td>integer</td>
+                <td>Items per page (default: 10, max: 100)</td>
+            </tr>
+            <tr>
+                <td>sortBy</td>
+                <td>string</td>
+                <td>Field to sort by (date or amount, default: date)</td>
+            </tr>
+            <tr>
+                <td>sortOrder</td>
+                <td>string</td>
+                <td>Sort order (asc or desc, default: desc)</td>
+            </tr>
+        </table>
+        <h4>Response:</h4>
+        <pre><code>{
+  "transactions": [
+    {
+      "id": 1,
+      "amount": 100.50,
+      "description": "Grocery shopping",
+      "date": "2023-01-15T12:00:00.000Z",
+      "type": "expense",
+      "categoryId": 2,
+      "userId": 1,
+      "createdAt": "2023-01-01T00:00:00.000Z",
+      "updatedAt": "2023-01-01T00:00:00.000Z"
+    }
+  ],
+  "pagination": {
+    "total": 1,
+    "page": 1,
+    "limit": 10,
+    "totalPages": 1
+  }
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/transactions/summary</code>
+        <p>Get transaction summary (total income, expenses, and balance)</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Query Parameters:</h4>
+        <table>
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>startDate</td>
+                <td>date</td>
+                <td>Start date for summary period (YYYY-MM-DD)</td>
+            </tr>
+            <tr>
+                <td>endDate</td>
+                <td>date</td>
+                <td>End date for summary period (YYYY-MM-DD)</td>
+            </tr>
+        </table>
+        <h4>Response:</h4>
+        <pre><code>{
+  "summary": {
+    "totalIncome": 5000,
+    "totalExpense": 2500,
+    "balance": 2500,
+    "period": {
+      "startDate": "2023-01-01",
+      "endDate": "2023-01-31"
+    }
+  }
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/transactions/{id}</code>
+        <p>Get a specific transaction by ID</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "transaction": {
+    "id": 1,
+    "amount": 100.50,
+    "description": "Grocery shopping",
+    "date": "2023-01-15T12:00:00.000Z",
+    "type": "expense",
+    "categoryId": 2,
+    "userId": 1,
+    "createdAt": "2023-01-01T00:00:00.000Z",
+    "updatedAt": "2023-01-01T00:00:00.000Z"
+  }
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method put">PUT</span>
+        <code>/api/transactions/{id}</code>
+        <p>Update a transaction</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Request Body:</h4>
+        <pre><code>{
+  "amount": 120.75,
+  "description": "Updated description"
+}</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "message": "Transaction updated successfully",
+  "transaction": {
+    "id": 1,
+    "amount": 120.75,
+    "description": "Updated description",
+    "date": "2023-01-15T12:00:00.000Z",
+    "type": "expense",
+    "categoryId": 2,
+    "userId": 1,
+    "createdAt": "2023-01-01T00:00:00.000Z",
+    "updatedAt": "2023-01-01T00:00:00.000Z"
+  }
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method delete">DELETE</span>
+        <code>/api/transactions/{id}</code>
+        <p>Delete a transaction</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "message": "Transaction deleted successfully"
+}</code></pre>
+    </div>
+
+    <h3>Budgets</h3>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <code>/api/budgets</code>
+        <p>Create a new budget</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Request Body:</h4>
+        <pre><code>{
+  "amount": 500,
+  "month": 1,
+  "year": 2023,
+  "categoryId": 2
+}</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "message": "Budget created successfully",
+  "budget": {
+    "id": 1,
+    "amount": 500,
+    "month": 1,
+    "year": 2023,
+    "categoryId": 2,
+    "userId": 1,
+    "createdAt": "2023-01-01T00:00:00.000Z",
+    "updatedAt": "2023-01-01T00:00:00.000Z"
+  }
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/budgets</code>
+        <p>Get all budgets for the current user</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Query Parameters:</h4>
+        <table>
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>month</td>
+                <td>integer</td>
+                <td>Filter by month (1-12)</td>
+            </tr>
+            <tr>
+                <td>year</td>
+                <td>integer</td>
+                <td>Filter by year</td>
+            </tr>
+            <tr>
+                <td>categoryId</td>
+                <td>integer</td>
+                <td>Filter by category ID</td>
+            </tr>
+        </table>
+        <h4>Response:</h4>
+        <pre><code>{
+  "budgets": [
+    {
+      "id": 1,
+      "amount": 500,
+      "month": 1,
+      "year": 2023,
+      "categoryId": 2,
+      "userId": 1,
+      "createdAt": "2023-01-01T00:00:00.000Z",
+      "updatedAt": "2023-01-01T00:00:00.000Z"
+    }
+  ]
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/budgets/vs-actual</code>
+        <p>Get budget vs actual spending comparison</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Query Parameters:</h4>
+        <table>
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>month</td>
+                <td>integer</td>
+                <td>Month for comparison (1-12, defaults to current month)</td>
+            </tr>
+            <tr>
+                <td>year</td>
+                <td>integer</td>
+                <td>Year for comparison (defaults to current year)</td>
+            </tr>
+        </table>
+        <h4>Response:</h4>
+        <pre><code>{
+  "month": 1,
+  "year": 2023,
+  "totalBudget": 1500,
+  "totalSpent": 1200,
+  "remaining": 300,
+  "percentUsed": 80,
+  "categories": [
+    {
+      "budgetId": 1,
+      "categoryId": 2,
+      "budgetAmount": 500,
+      "actualAmount": 400,
+      "difference": 100,
+      "percentUsed": 80
+    }
+  ]
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/budgets/{id}</code>
+        <p>Get a specific budget by ID</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "budget": {
+    "id": 1,
+    "amount": 500,
+    "month": 1,
+    "year": 2023,
+    "categoryId": 2,
+    "userId": 1,
+    "createdAt": "2023-01-01T00:00:00.000Z",
+    "updatedAt": "2023-01-01T00:00:00.000Z"
+  }
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method put">PUT</span>
+        <code>/api/budgets/{id}</code>
+        <p>Update a budget</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Request Body:</h4>
+        <pre><code>{
+  "amount": 600
+}</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "message": "Budget updated successfully",
+  "budget": {
+    "id": 1,
+    "amount": 600,
+    "month": 1,
+    "year": 2023,
+    "categoryId": 2,
+    "userId": 1,
+    "createdAt": "2023-01-01T00:00:00.000Z",
+    "updatedAt": "2023-01-01T00:00:00.000Z"
+  }
+}</code></pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method delete">DELETE</span>
+        <code>/api/budgets/{id}</code>
+        <p>Delete a budget</p>
+        <h4>Headers:</h4>
+        <pre><code>Authorization: Bearer &lt;your_jwt_token&gt;</code></pre>
+        <h4>Response:</h4>
+        <pre><code>{
+  "message": "Budget deleted successfully"
+}</code></pre>
+    </div>
+
+    <h2>Swagger UI</h2>
+    <p>For interactive API documentation, you can access the Swagger UI at:</p>
+    <pre><code>http://localhost:3000/swagger</code></pre>
+
+    <h2>Testing the API</h2>
+    <p>To test the API, you can use tools like:</p>
+    <ul>
+        <li>Swagger UI (available at <code>http://localhost:3000/swagger</code>)</li>
+        <li>Postman</li>
+        <li>cURL</li>
+        <li>Fetch API in JavaScript</li>
+    </ul>
+
+    <h3>Example: Login and Get Profile</h3>
+    <pre><code>// Step 1: Login to get token
+fetch('http://localhost:3000/api/users/login', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    email: 'john@example.com',
+    password: 'password123'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  const token = data.token;
+  
+  // Step 2: Use token to get profile
+  return fetch('http://localhost:3000/api/users/profile', {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+})
+.then(response => response.json())
+.then(profileData => console.log(profileData))
+.catch(error => console.error('Error:', error));</code></pre>
+
+    <footer>
+        <p>© 2023 Personal Budget Tracker API Documentation</p>
+    </footer>
+</body>
+</html>
