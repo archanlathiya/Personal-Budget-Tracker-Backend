@@ -1,5 +1,5 @@
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
-import { db } from './index';
+import { db } from './index.js';
 
 // This will run migrations on the database, creating tables if they don't exist
 // and running any pending migrations

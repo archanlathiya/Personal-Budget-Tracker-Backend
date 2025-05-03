@@ -1,6 +1,6 @@
 import type { Context } from "hono";
-import { db } from '../db';
-import { categories } from '../db/schema';
+import { db } from '../db/index.js';
+import { categories } from '../db/schema.js';
 import { eq, and } from 'drizzle-orm';
 
 // Create a new category
@@ -39,15 +39,14 @@ export const getCategories = async (c: Context) => {
     const user = c.get('user');
     const type = c.req.query('type'); // Optional filter by type
     
-    let query = db.select().from(categories).where(eq(categories.userId, user.userId));
-    
-    // Apply type filter if provided
+    // Do this:
+    let conditions = [eq(categories.userId, user.userId)];
+
     if (type && (type === 'income' || type === 'expense')) {
-      query = query.where(and(
-        eq(categories.userId, user.userId),
-        eq(categories.type, type)
-      ));
+      conditions.push(eq(categories.type, type));
     }
+
+    let query = db.select().from(categories).where(and(...conditions));
     
     const userCategories = await query;
     

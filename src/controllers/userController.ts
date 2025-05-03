@@ -1,14 +1,15 @@
 import type { Context } from "hono";
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { db } from '../db';
-import { users } from '../db/schema';
+import jwt, { type SignOptions, type Secret } from 'jsonwebtoken';
+import { db } from '../db/index.js';
+import { users } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
 import dotenv from 'dotenv';
 
+
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET || 'default-secret';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1d';
 
 export const register = async (c: Context) => {
@@ -38,9 +39,9 @@ export const register = async (c: Context) => {
     // Generate JWT token
     const token = jwt.sign(
       { userId: newUser[0].id, email: newUser[0].email },
-      JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
-    );
+      JWT_SECRET as Secret,
+      { expiresIn: JWT_EXPIRES_IN } as SignOptions
+  );
     
     return c.json({
       message: 'User registered successfully',
@@ -75,11 +76,10 @@ export const login = async (c: Context) => {
       return c.json({ error: 'Invalid credentials' }, 401);
     }
     
-    // Generate JWT token
     const token = jwt.sign(
       { userId: user[0].id, email: user[0].email },
-      JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
+      JWT_SECRET as Secret,
+      { expiresIn: JWT_EXPIRES_IN } as SignOptions
     );
     
     return c.json({

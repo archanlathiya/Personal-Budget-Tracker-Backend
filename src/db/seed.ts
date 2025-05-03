@@ -1,5 +1,5 @@
-import { db } from './index';
-import { users, categories, transactions, budgets } from './schema';
+import { db } from './index.js';
+import { users, categories, transactions, budgets } from './schema.js';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 
@@ -159,21 +159,21 @@ async function seed() {
     const dateInPreviousMonth = (day: number) => new Date(currentYear, currentMonth - 1, day);
     
     // Get category IDs for user1
-    const salaryCategory = user1Categories.find(c => c.name === 'Salary');
-    const freelanceCategory = user1Categories.find(c => c.name === 'Freelance');
-    const investmentsCategory = user1Categories.find(c => c.name === 'Investments');
-    const housingCategory = user1Categories.find(c => c.name === 'Housing');
-    const foodCategory = user1Categories.find(c => c.name === 'Food');
-    const transportationCategory = user1Categories.find(c => c.name === 'Transportation');
-    const entertainmentCategory = user1Categories.find(c => c.name === 'Entertainment');
-    const utilitiesCategory = user1Categories.find(c => c.name === 'Utilities');
-    const healthcareCategory = user1Categories.find(c => c.name === 'Healthcare');
+    const salaryCategory = user1Categories.find((c: typeof categories.$inferSelect) => c.name === 'Salary');
+    const freelanceCategory = user1Categories.find((c: typeof categories.$inferSelect) => c.name === 'Freelance');
+    const investmentsCategory = user1Categories.find((c: typeof categories.$inferSelect) => c.name === 'Investments');
+    const housingCategory = user1Categories.find((c: typeof categories.$inferSelect) => c.name === 'Housing');
+    const foodCategory = user1Categories.find((c: typeof categories.$inferSelect) => c.name === 'Food');
+    const transportationCategory = user1Categories.find((c: typeof categories.$inferSelect) => c.name === 'Transportation');
+    const entertainmentCategory = user1Categories.find((c: typeof categories.$inferSelect) => c.name === 'Entertainment');
+    const utilitiesCategory = user1Categories.find((c: typeof categories.$inferSelect) => c.name === 'Utilities');
+    const healthcareCategory = user1Categories.find((c: typeof categories.$inferSelect) => c.name === 'Healthcare');
     
     // Create transactions for current month
     await db.insert(transactions).values([
       // Income transactions
       {
-        amount: 5000,
+        amount: String(5000),
         description: 'Monthly salary',
         date: dateInCurrentMonth(1),
         type: 'income',
@@ -183,7 +183,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 800,
+        amount: String(800),
         description: 'Freelance project',
         date: dateInCurrentMonth(15),
         type: 'income',
@@ -193,7 +193,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 200,
+        amount: String(200),
         description: 'Dividend payment',
         date: dateInCurrentMonth(20),
         type: 'income',
@@ -205,7 +205,7 @@ async function seed() {
       
       // Expense transactions
       {
-        amount: 1500,
+        amount: String(1500),
         description: 'Rent payment',
         date: dateInCurrentMonth(5),
         type: 'expense',
@@ -215,7 +215,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 400,
+        amount: String(400),
         description: 'Grocery shopping',
         date: dateInCurrentMonth(8),
         type: 'expense',
@@ -225,7 +225,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 150,
+        amount: String(150),
         description: 'Restaurant dinner',
         date: dateInCurrentMonth(12),
         type: 'expense',
@@ -235,7 +235,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 120,
+        amount: String(120),
         description: 'Gas refill',
         date: dateInCurrentMonth(10),
         type: 'expense',
@@ -245,7 +245,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 80,
+        amount: String(80),
         description: 'Movie night',
         date: dateInCurrentMonth(18),
         type: 'expense',
@@ -255,7 +255,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 200,
+        amount: String(200),
         description: 'Electricity bill',
         date: dateInCurrentMonth(22),
         type: 'expense',
@@ -265,7 +265,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 150,
+        amount: String(150),
         description: 'Doctor visit',
         date: dateInCurrentMonth(25),
         type: 'expense',
@@ -280,7 +280,7 @@ async function seed() {
     await db.insert(transactions).values([
       // Income transactions
       {
-        amount: 5000,
+        amount: String(5000),
         description: 'Monthly salary',
         date: dateInPreviousMonth(1),
         type: 'income',
@@ -290,7 +290,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 600,
+        amount: String(600),
         description: 'Freelance project',
         date: dateInPreviousMonth(10),
         type: 'income',
@@ -302,7 +302,7 @@ async function seed() {
       
       // Expense transactions
       {
-        amount: 1500,
+        amount: String(1500),
         description: 'Rent payment',
         date: dateInPreviousMonth(5),
         type: 'expense',
@@ -312,7 +312,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 350,
+        amount: String(350),
         description: 'Grocery shopping',
         date: dateInPreviousMonth(8),
         type: 'expense',
@@ -322,7 +322,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 100,
+        amount: String(100),
         description: 'Gas refill',
         date: dateInPreviousMonth(15),
         type: 'expense',
@@ -332,7 +332,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 180,
+        amount: String(180),
         description: 'Water and internet bills',
         date: dateInPreviousMonth(20),
         type: 'expense',
@@ -347,7 +347,7 @@ async function seed() {
     console.log('Creating sample budgets...');
     await db.insert(budgets).values([
       {
-        amount: 1500,
+        amount: String(1500),
         month: currentMonth + 1, // Current month (1-12)
         year: currentYear,
         categoryId: housingCategory?.id,
@@ -356,7 +356,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 600,
+        amount: String(600),
         month: currentMonth + 1,
         year: currentYear,
         categoryId: foodCategory?.id,
@@ -365,7 +365,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 200,
+        amount: String(200),
         month: currentMonth + 1,
         year: currentYear,
         categoryId: transportationCategory?.id,
@@ -374,7 +374,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 150,
+        amount: String(150),
         month: currentMonth + 1,
         year: currentYear,
         categoryId: entertainmentCategory?.id,
@@ -383,7 +383,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 250,
+        amount: String(250),
         month: currentMonth + 1,
         year: currentYear,
         categoryId: utilitiesCategory?.id,
@@ -392,7 +392,7 @@ async function seed() {
         updatedAt: new Date()
       },
       {
-        amount: 200,
+        amount: String(200),
         month: currentMonth + 1,
         year: currentYear,
         categoryId: healthcareCategory?.id,

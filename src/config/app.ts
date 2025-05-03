@@ -2,11 +2,11 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { swaggerUI } from '@hono/swagger-ui';
-import userRouter from '../routes/userRoutes';
-import categoryRouter from '../routes/categoryRoutes';
-import transactionRouter from '../routes/transactionRoutes';
-import budgetRouter from '../routes/budgetRoutes';
-import { createOpenAPIDoc } from './swagger';
+import userRouter from '../routes/userRoutes.js';
+import categoryRouter from '../routes/categoryRoutes.js';
+import transactionRouter from '../routes/transactionRoutes.js';
+import budgetRouter from '../routes/budgetRoutes.js';
+import { createOpenAPIDoc } from './swagger.js';
 
 export const createApp = () => {
   const app = new Hono();

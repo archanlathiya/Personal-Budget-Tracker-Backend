@@ -1,6 +1,6 @@
 import type { Context } from "hono";
-import { db } from '../db';
-import { transactions, categories } from '../db/schema';
+import { db } from '../db/index.js';
+import { transactions, categories } from '../db/schema.js';
 import { eq, and, desc, sql, asc, between, gte, lte } from 'drizzle-orm';
 
 // Create a new transaction
@@ -26,7 +26,7 @@ export const createTransaction = async (c: Context) => {
     }
     
     // Validate category if provided
-    if (categoryId) {
+    if (categoryId as string) {
       const category = await db.select().from(categories).where(
         and(
           eq(categories.id, categoryId),
@@ -69,13 +69,13 @@ export const getTransactions = async (c: Context) => {
     
     // Parse query parameters
     const type = c.req.query('type'); // 'income' or 'expense'
-    const categoryId = c.req.query('categoryId') ? parseInt(c.req.query('categoryId')) : undefined;
-    const startDate = c.req.query('startDate') ? new Date(c.req.query('startDate')) : undefined;
-    const endDate = c.req.query('endDate') ? new Date(c.req.query('endDate')) : undefined;
-    const minAmount = c.req.query('minAmount') ? parseFloat(c.req.query('minAmount')) : undefined;
-    const maxAmount = c.req.query('maxAmount') ? parseFloat(c.req.query('maxAmount')) : undefined;
-    const page = c.req.query('page') ? parseInt(c.req.query('page')) : 1;
-    const limit = c.req.query('limit') ? parseInt(c.req.query('limit')) : 10;
+    const categoryId = c.req.query('categoryId') ? parseInt(c.req.query('categoryId')!) : undefined;
+    const startDate = c.req.query('startDate') ? new Date(c.req.query('startDate')!) : undefined;
+    const endDate = c.req.query('endDate') ? new Date(c.req.query('endDate')!) : undefined;
+    const minAmount = c.req.query('minAmount') ? parseFloat(c.req.query('minAmount')!) : undefined;
+    const maxAmount = c.req.query('maxAmount') ? parseFloat(c.req.query('maxAmount')!) : undefined;
+    const page = c.req.query('page') ? parseInt(c.req.query('page')!) : 1;
+    const limit = c.req.query('limit') ? parseInt(c.req.query('limit')!) : 10;
     const sortBy = c.req.query('sortBy') || 'date';
     const sortOrder = c.req.query('sortOrder') || 'desc';
     
@@ -111,11 +111,11 @@ export const getTransactions = async (c: Context) => {
     }
     
     if (minAmount && !isNaN(minAmount)) {
-      conditions.push(gte(transactions.amount, minAmount));
+      conditions.push(gte(transactions.amount, String(minAmount)));
     }
     
     if (maxAmount && !isNaN(maxAmount)) {
-      conditions.push(lte(transactions.amount, maxAmount));
+      conditions.push(lte(transactions.amount, String(maxAmount)));
     }
     
     // Determine sort column and order
@@ -234,7 +234,7 @@ export const updateTransaction = async (c: Context) => {
     }
     
     // Validate category if provided
-    if (categoryId) {
+    if (categoryId as string) {
       const transactionType = type || existingTransaction[0].type;
       const category = await db.select().from(categories).where(
         and(
@@ -322,8 +322,8 @@ export const getTransactionSummary = async (c: Context) => {
     const user = c.get('user');
     
     // Parse query parameters for date range
-    const startDate = c.req.query('startDate') ? new Date(c.req.query('startDate')) : undefined;
-    const endDate = c.req.query('endDate') ? new Date(c.req.query('endDate')) : undefined;
+    const startDate = c.req.query('startDate') ? new Date(c.req.query('startDate')!) : undefined;
+    const endDate = c.req.query('endDate') ? new Date(c.req.query('endDate')!) : undefined;
     
     // Build query conditions
     let conditions = [eq(transactions.userId, user.userId)];

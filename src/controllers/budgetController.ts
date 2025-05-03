@@ -1,7 +1,7 @@
 import type { Context } from "hono";
-import { db } from '../db';
-import { budgets, categories } from '../db/schema';
-import { eq, and, sql, between } from 'drizzle-orm';
+import { db } from '../db/index.js';
+import { budgets, categories } from '../db/schema.js';
+import { eq, and, sql, between, not } from 'drizzle-orm';
 
 // Create a new budget
 export const createBudget = async (c: Context) => {
@@ -25,7 +25,7 @@ export const createBudget = async (c: Context) => {
     }
     
     // Validate category if provided
-    if (categoryId) {
+    if (categoryId as string) {
       const category = await db.select().from(categories).where(
         and(
           eq(categories.id, categoryId),
@@ -40,7 +40,7 @@ export const createBudget = async (c: Context) => {
     }
     
     // Check if budget already exists for this month/year/category
-    if (categoryId) {
+    if (categoryId as string) {
       const existingBudget = await db.select().from(budgets).where(
         and(
           eq(budgets.userId, user.userId),
@@ -82,9 +82,9 @@ export const getBudgets = async (c: Context) => {
     const user = c.get('user');
     
     // Parse query parameters
-    const month = c.req.query('month') ? parseInt(c.req.query('month')) : undefined;
-    const year = c.req.query('year') ? parseInt(c.req.query('year')) : undefined;
-    const categoryId = c.req.query('categoryId') ? parseInt(c.req.query('categoryId')) : undefined;
+    const month = c.req.query('month') ? parseInt(c.req.query('month')!) : undefined;
+    const year = c.req.query('year') ? parseInt(c.req.query('year')!) : undefined;
+    const categoryId = c.req.query('categoryId') ? parseInt(c.req.query('categoryId')!) : undefined;
     
     // Build query conditions
     let conditions = [eq(budgets.userId, user.userId)];
@@ -182,7 +182,7 @@ export const updateBudget = async (c: Context) => {
     }
     
     // Validate category if provided
-    if (categoryId) {
+    if (categoryId as string) {
       const category = await db.select().from(categories).where(
         and(
           eq(categories.id, categoryId),
@@ -211,7 +211,7 @@ export const updateBudget = async (c: Context) => {
           eq(budgets.month, newMonth),
           eq(budgets.year, newYear),
           eq(budgets.categoryId, newCategoryId),
-          eq(budgets.id, id, true) // Not the current budget
+          not(eq(budgets.id, id)) // Not the current budget
         )
       );
       
@@ -292,8 +292,8 @@ export const getBudgetVsActual = async (c: Context) => {
     const user = c.get('user');
     
     // Parse query parameters
-    const month = c.req.query('month') ? parseInt(c.req.query('month')) : new Date().getMonth() + 1;
-    const year = c.req.query('year') ? parseInt(c.req.query('year')) : new Date().getFullYear();
+    const month = c.req.query('month') ? parseInt(c.req.query('month')!) : new Date().getMonth() + 1;
+    const year = c.req.query('year') ? parseInt(c.req.query('year')!) : new Date().getFullYear();
     
     if (isNaN(month) || month < 1 || month > 12) {
       return c.json({ error: 'Month must be between 1 and 12' }, 400);
@@ -333,9 +333,9 @@ export const getBudgetVsActual = async (c: Context) => {
     `);
     
     // Convert to a map for easier lookup
-    const expenseMap = {};
+    const expenseMap: Record<string, number> = {};
     for (const expense of expensesByCategory) {
-      expenseMap[expense.category_id] = Number(expense.total_spent);
+      expenseMap[String(expense.category_id)] = Number(expense.total_spent);
     }
     
     // Calculate total budget and total spent
@@ -344,7 +344,7 @@ export const getBudgetVsActual = async (c: Context) => {
     
     // Combine budget and actual data
     const budgetVsActual = userBudgets.map(budget => {
-      const spent = expenseMap[budget.categoryId] || 0;
+      const spent = expenseMap[String(budget.categoryId)] || 0;
       totalBudget += Number(budget.amount);
       totalSpent += spent;
       
